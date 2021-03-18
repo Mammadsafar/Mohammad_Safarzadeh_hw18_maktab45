@@ -1,0 +1,16 @@
+
+
+const logout = (req, res) => {
+
+    req.session.destroy(function(err) {
+        if (err) return res.status(500).send('Server Error :(')
+    });
+    res.redirect('/api/login');
+    
+}
+
+
+
+module.exports = {
+    logout
+}

@@ -1,17 +1,27 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 
 const {
     registerPage,
     addUser,
     getAllUser,
-    loggedInUser,
+    deletUser,
+    UpdateUser,
+    UpdatePass,
 } = require("../services/Register");
 
-console.log(123432);
-routes.get('/registerPage', registerPage);
-routes.post('/', addUser);
-routes.get('/getAllUser', getAllUser);
-routes.post('/loggedInUser',loggedInUser);
 
-module.exports = routes;
+
+console.log(123432);
+router.get('/', registerPage);
+router.post('/', addUser);
+router.get('/getAllUser', getAllUser);
+router.delete('/:userName', deletUser);
+router.put('/pass:userName', UpdatePass);
+router.put('/:userName', UpdateUser);
+
+
+
+
+
+module.exports = router;

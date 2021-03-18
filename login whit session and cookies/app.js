@@ -31,8 +31,7 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', api);
-app.use('/users', usersRouter);
+
 
 
 app.use(session({
@@ -44,13 +43,30 @@ app.use(session({
     expires: 600000
   }
 }));
-
 app.use((req, res, next) => {
+
   if (req.cookies.user_sid && !req.session.user) {
-    res.clearCookie('user_sid');
-  }
+    res.clearCookie('user_sid')
+  };
   next();
+});
+
+
+
+
+app.get('/home', (req, res) => {
+  res.render("home")
 })
+app.get('/', (req, res) => {
+  res.render("home")
+})
+app.get('/about', (req, res) => {
+  res.render("about")
+})
+app.use('/api', api);
+app.use('/users', usersRouter);
+
+
 
 
 
