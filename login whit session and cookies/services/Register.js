@@ -156,7 +156,7 @@ const deletUser = (req, res) => {
             err: err.msg
         });
 
-        res.redirect("/api/logout");
+        res.send("ok");
     })
 
 }
@@ -196,7 +196,7 @@ const UpdatePass = (req, res) => {
             msg: "Server Error :)"
         });
 
-        if (user.length < 1) {
+        if (!user) {
             return res.status(404).json({
                 msg: "Not Found :("
             });
@@ -218,7 +218,7 @@ const UpdatePass = (req, res) => {
                 msg: "Bad Request :("
             });
             // ! ------------------------------- hash pass
-            const newUser = user;
+            
             const myPlaintextPassword = req.body.newPassword;
             bcrypt.genSalt(10, function (err, salt) {
                 console.log("salt   => ", salt);
@@ -238,7 +238,7 @@ const UpdatePass = (req, res) => {
                             msg: "Server Error :)",
                             err: err.msg
                         });
-                        res.redirect('/api/logout')
+                        res.send("OK :)")
                     })
 
                 });

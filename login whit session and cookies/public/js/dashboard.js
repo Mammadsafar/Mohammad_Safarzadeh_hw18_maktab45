@@ -25,7 +25,7 @@ $(document).ready(function () {
         success: function (response) {
             user = response[0];
 
-
+            console.log(user);
             $("#username").html(`@${user.userName}`)
             $("#fullName").html(`${user.firstName} ${user.lastName}`)
             $("#email").html(`${user.email}`)
@@ -47,32 +47,7 @@ $(document).ready(function () {
 
     $("#logout_btn").on('click', () => {
 
-        $.ajax({
-            type: "GET",
-            url: "/api/logout",
-            // dataType: "application/json",
-            success: function (response) {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Sign Out',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                window.location.reload();
-            },
-
-            error: function (err) {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'error',
-                    title: `${err.message}`,
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-
-            },
-        });
+        logout()
 
     })
 
@@ -80,19 +55,14 @@ $(document).ready(function () {
     function show_employee() {
 
         $("#myModal_user").html("")
-        user.userName
 
-        user.email
-        user.Gender
-        user.birthDay
-        user.phoneNumber
         let person =
             `
                 <div class="column" id="main">
                             <div class="form-group">
-                            <label for="exampleInputName">ID :</label>
+                            <label for="exampleInputName">User Name :</label>
                             <input type="name" class="form-control" id="username_input"
-                            placeholder="${user.userName}" readOnly>
+                            value="${user.userName}" readOnly>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputName">First Name :</label>
@@ -170,34 +140,29 @@ $(document).ready(function () {
 
     function Change_pass() {
 
-        $("#myModal_user_changePass").html("")
-        user.userName
+        $("#myModal_user").html("")
 
-        user.email
-        user.Gender
-        user.birthDay
-        user.phoneNumber
         let person =
             `
                 <div class="column" id="main">
                             <div class="form-group">
                             <label for="exampleInputName">Old Password :</label>
                             <input type="name" class="form-control" id="oldPass_input"
-                            placeholder="Old Password" readOnly>
+                            placeholder="Old Password" >
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputName">New Password :</label>
                                 <input type="name" class="form-control" id="newPass_input"
-                                    value="New Password">
+                                    placeholder="New Password">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputName">New Password Verify :</label>
                                 <input type="name" class="form-control" id="newPass_verify_input"
-                                    value="New Password">
+                                    placeholder="New Password">
                             </div>
 
                             
-                            <button id="update_btn" type="submit" class="btn btn-primary" name="${user.userName}" id="confirm_pass" >Confirm</button>
+                            <button id="confirm_pass" type="submit" class="btn btn-primary" name="${user.userName}">Confirm</button>
 
                         </div>
                     <div>
@@ -228,29 +193,30 @@ $(document).ready(function () {
                     </div>
 
                 `
-        $("#myModal_user_changePass").append(person);
+        $("#myModal_user").html(person);
 
 
     }
 
     $("body").on('click', '#change_pass_btn', function () {
-
+        Change_pass();
     })
 
     $("body").on('click', '#update_btn', function () {
 
         let user = {
-            firstName: $("#first_name_input").val,
-            lastName: $("#last_name_input").val,
-            userName: $("#username_input").val,
-            birthDay: $("#birthday").val,
-            Gender: $("#input_gender").val,
-            email: $("#email_input").val,
-            phoneNumber: $("#phone_input").val,
+            firstName: $("#first_name_input").val(),
+            lastName: $("#last_name_input").val(),
+            userName: $("#username_input").val(),
+            birthDay: $("#birthday").val(),
+            Gender: $("#input_gender").val(),
+            email: $("#email_input").val(),
+            phoneNumber: $("#phone_input").val(),
         }
+        console.log(user);
         $.ajax({
             type: "PUT",
-            url: `/api/register/${$("#username_input").val()}`,
+            url: `/api/register/${user.userName}`,
             data: user,
             // dataType: "application/json",
             success: function (response) {
@@ -276,27 +242,87 @@ $(document).ready(function () {
             },
         });
     })
-    
-    $("body").on('click', '#delete_btn', function () {
-        Change_pass();
-    })
-    $("body").on('click', '#confirm_pass', function () {
 
-        let pass={
-            userName: user.userName,
-            oldPassword:$("#oldPass_input").val(),
-            newPassword:$("#newPass_input").val()
-        }
+    $("body").on('click', '#delete_btn', function () {
+
+
         $.ajax({
-            type: "Put",
-            url: `/api/register/pass${$("#username_input").val()}`,
-            data:pass,
+            type: "DELETE",
+            url: `/api/register/${user.userName}`,
             // dataType: "application/json",
             success: function (response) {
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
                     title: 'Delete was Successfuly',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                logout();
+            },
+    
+            error: function (err) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'you can delete',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            },
+        });
+
+    })
+    $("body").on('click', '#confirm_pass', function () {
+        console.log(123);
+        let pass = {
+            userName: user.userName,
+            oldPassword: $("#oldPass_input").val(),
+            newPassword: $("#newPass_input").val()
+        }
+        console.log(pass);
+        $.ajax({
+            type: "PUT",
+            url: `/api/register/pass${user.userName}`,
+            data: pass,
+            // dataType: "application/json",
+            success: function (response) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Cange pass was successfuly',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                logout();
+            },
+
+            error: function (err) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: `you can not cange password`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+            },
+        });
+    })
+
+
+
+
+    function logout() {
+        $.ajax({
+            type: "GET",
+            url: "/api/logout",
+            // dataType: "application/json",
+            success: function (response) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Sign Out',
                     showConfirmButton: false,
                     timer: 1500
                 })
@@ -307,12 +333,15 @@ $(document).ready(function () {
                 Swal.fire({
                     position: 'top-end',
                     icon: 'error',
-                    title: `you can not delete`,
+                    title: `${err.message}`,
                     showConfirmButton: false,
                     timer: 1500
                 })
 
             },
         });
-    })
+    }
+
+
+
 })
